@@ -20,8 +20,11 @@ public class PID {
 	/* Make derivative filter with SizedStack */
 	private SizedStack derivative_stack;
 
+	private boolean sp_ramp_enabled;
+	PID sp_ramp_pid;
 
 	public PID ( signal functions ){
+		sp_ramp_enabled = false;
 		this.functions = functions;
 		integral = 0;
 		setpoint = 0;
@@ -35,6 +38,9 @@ public class PID {
 		derivative_stack.resize( n );
 	}
 	public void set_setpoint( double s ){
+		if ( sp_ramp_enabled ) {
+			sp_ramp_pid.set_setpoint( s );
+		}
 		setpoint = s;
 	}
 	public void set_pid( double p, double i, double d ) {
@@ -42,7 +48,15 @@ public class PID {
 		this.Ki = i;
 		this.Kd = d;
 	}
+	public void set_sp_ramp( PID sp_pid ) {
+		sp_ramp_enabled = true;
+		sp_ramp_pid = sp_pid;
+	}
 	public void update( double dt ){
+		if ( sp_ramp_enabled ) {
+			sp_ramp_pid.update( dt );
+			setpoint = sp_ramp_pid.get();
+		}
 		error = setpoint - functions.getValue();
 		integral_stack.push( ( Ki * error * dt ) );
 

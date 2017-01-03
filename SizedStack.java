@@ -8,11 +8,34 @@ import java.util.Collections;
 class SizedStack {
   ArrayList<Double> data;
   int size;
+
+  /**
+  * Constructs the SizedStack based on desired size.
+  * @param desired size of stack.
+  */
   public SizedStack( int size ) {
     this.size = size;
     this.data = new ArrayList<Double>( size );
 
   }
+  /**
+  * Overloaded constructor for SizedStack that takes an ArrayList and keeps its size.
+  * @param the ArrayList the SizedStack will be based on.
+  */
+  public SizedStack( ArrayList<Double> list ) {
+    this.size = list.size();
+    this.data = list;
+  }
+  /**
+  * Used to retreve the data in a SizedStack.
+  * @return ArrayList representation of data held in SizedStack.
+  */
+  public ArrayList<Double> get_data() {
+    return this.data;
+  }
+  /**
+  * Returns summation of a SizedStack.
+  */
   public double sum() {
     this.trim();
     double sum = 0;
@@ -21,24 +44,43 @@ class SizedStack {
     }
     return sum;
   }
+  /**
+  * Returns the mean of a sized stack.
+  */
   public double mean() {
     return this.sum()/data.size();
   }
-  public double left_pop() {
+  /**
+  * Removes the oldest entered data point and returns it.
+  */
+  public double right_pop() {
     return data.remove( data.size()-1 );
   }
+  /**
+  * Retrims the SizedStack.. Keeps it within the defined size.
+  */
   private void trim() {
     while ( data.size() > this.size ) {
-      this.left_pop();
+      this.right_pop();
     }
   }
+  /**
+  * Pushes a value to the left of the sized stack.
+  */
   public void push( double a ) {
     data.add( 0, a );
     this.trim();
   }
+  /**
+  * Resizes the SizedStack to the given integral value.
+  */
   public void resize( int n ) {
     this.size = n;
+    this.trim();
   }
+  /**
+  * Returns the standard deviation of the data held within the SizedStack
+  */
   public double stdev() {
     this.trim();
     double mean = this.mean();
@@ -48,6 +90,9 @@ class SizedStack {
     }
     return Math.sqrt( sum/(data.size()-1) );
   }
+  /**
+  * Prints an ArrayList<Double> in a nice way.
+  */
   private void array_print( ArrayList<Double> array ) {
     System.out.print("[ ");
     for ( int i = 0; i < array.size() - 1; i ++ ) {
@@ -55,28 +100,23 @@ class SizedStack {
     }
     System.out.println( array.get( array.size()-1 ) + " ]\n");
   }
+  /**
+  * Used to print out the SizedStack data if you're too lazy to use overloaded toString() in a print statement. Pretty much depricated.
+  */
   public void debug_print() {
     this.trim();
     array_print( data );
   }
-  // Work in progress Quartile Math
-  public void IQR () {
-    int range = Math.round(this.size / 4);
-    System.out.println( "Range: " + range );
-    ArrayList<Double> sorted = (ArrayList<Double>) data.clone();
-    Collections.sort( sorted );
-    System.out.println("Sorted");
-    array_print( sorted );
-    System.out.println("Data");
-    array_print( data );
-    double Q1 = sorted.get( range * 1 );
-    double Q2 = sorted.get( range * 2 );
-    double Q3 = sorted.get( range * 3 );
-    double Q4 = sorted.get( range * 4 );
-    System.out.println("Q1 " + Q1 );
-    System.out.println("Q2 " + Q2 );
-    System.out.println("Q3 " + Q3 );
-    System.out.println("Q4 " + Q4 );
-    System.out.println("IQR: " + (Q3 - Q1) );
+  
+  @Override
+  public String toString() {
+    this.trim();
+    String s = "";
+    s += "[ ";
+    for ( int i = 0; i < data.size() - 1; i ++ ) {
+      s += data.get( i ) + " ,";
+    }
+    s += data.get( data.size()-1 ) + " ]\n";
+    return s;
   }
 }
