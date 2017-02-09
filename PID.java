@@ -60,7 +60,7 @@ public class PID {
 		error = setpoint - functions.getValue();
 		integral_stack.push( ( Ki * error * dt ) );
 
-		derivative = ( prevError - error ) / dt;
+		derivative = ( error - prevError ) / dt;
 		derivative_stack.push( derivative );
 		prevError = error;
 		output = ( Kp * error ) + ( integral_stack.sum() ) + ( Kd * derivative_stack.mean() ); // Note: Should we use mean derivative filter?
